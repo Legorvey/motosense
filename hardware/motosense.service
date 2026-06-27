@@ -1,0 +1,14 @@
+[Unit]
+Description=Motosense Edge Processing Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/rayram34
+ExecStart=/home/rayram34/motosense_env/bin/python /home/rayram34/motosense_main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
