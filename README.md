@@ -1,41 +1,58 @@
 # MOTOSENSE: Vibration Monitoring System
 
-This project is an industrial-grade vibration monitoring system designed to track the health of mechanical components—specifically for a motorcycle's CVT system—by measuring RMS (Root Mean Square) vibration levels. It provides real-time data collection via hardware sensors and a live web-based dashboard for analysis.
+MOTOSENSE is an industrial grade vibration monitoring system designed to track the health of mechanical components, specifically for the CVT system of the Honda Vario 160 motorcycle. This system utilizes a Raspberry Pi and ADXL345 sensor for real time data acquisition, edge processing for instant alerts, and cloud database integration for long term trend analysis.
 
 ## Project Overview
-The system consists of two main parts:
-1.  **Hardware (Data Collection):** A Raspberry Pi connected to an accelerometer sensor (ADXL345) that captures vibration data and sends it to a cloud database.
-2.  **Dashboard (Visualization):** A web interface that pulls data from the cloud and displays it on an interactive chart, allowing users to monitor vibration trends and identify when maintenance might be required.
+The system features two primary operational modes:
+1. **Edge Processing (Offline):** The Raspberry Pi processes vibration data locally. If vibration exceeds thresholds, the system provides instant feedback via LED and buzzer indicators without requiring an internet connection.
+2. **Remote Monitoring (Online):** When connected to the internet, the system synchronizes data to a cloud database (InfluxDB) for remote web dashboard visualization.
 
-## How It Works
-*   **Data Flow:** The Raspberry Pi continuously reads vibration data from the sensor. This data is transmitted to an InfluxDB cloud database.
-*   **Visualization:** The web dashboard connects to the cloud database, retrieves the latest vibration values, and plots them on a graph.
+## Component List
 
-## System Setup
+| Component | Specification | Quantity |
+| :--- | :--- | :--- |
+| Raspberry Pi 3B | Computing Core | 1 Unit |
+| MicroSD Card | 128GB (Minimum 32GB) | 1 Unit |
+| GY-291 ADXL345 Module | I2C Vibration Sensor | 1 Unit |
+| HW-479 RGB LED Module | Common Cathode | 1 Unit |
+| Active Buzzer | Warning Alarm | 1 Unit |
+| Power Bank | Minimum Output 5V/3A | 1 Unit |
+| 40-pin GPIO Ribbon Cable | IDC Connector | 1 Unit |
+| Protoboard | Circuit Board | 1 Unit |
+| Solder & Solder Tin | Electrical Fixation Tool | 1 Set |
+| Stranded Wire (AWG 22/24) | Copper Wire | As needed |
+| Hard Box Casing | ABS/PETG Material | 1 Unit |
+| Spacer/Standoff Bolt | M2.5 Size | As needed |
+| Standard Bolt & Nut | M3 Size | As needed |
+| Heatsink & Mini Fan | Cooling System | 1 Set |
+| Cable Ties | Frame Fixator | As needed |
+| Heat Shrink Tubing | Cable Insulator | As needed |
 
-### Hardware Requirements
-*   Raspberry Pi (with internet connectivity)
-*   ADXL345 Accelerometer sensor
-*   MQTT Broker (for data transmission)
+## Electrical Specifications
 
-### Software Requirements
-*   Python 3.x
-*   InfluxDB (for data storage)
-*   Web Browser (to view the dashboard)
+### Sensor (ADXL345)
+* **VCC:** 3.3V (Pin 1)
+* **GND:** Ground (Pin 9)
+* **SDA:** GPIO 2 (Pin 3)
+* **SCL:** GPIO 3 (Pin 5)
 
-## Installation & Usage
+### Visual Indicator (RGB LED)
+* **Red:** GPIO 17 (Pin 11) - Danger indicator.
+* **Green:** GPIO 27 (Pin 13) - Normal operational indicator.
+* **Blue:** GPIO 22 (Pin 15) - Warning/transition indicator.
+* **Ground:** Ground (Pin 14)
 
-### 1. Data Collection (Raspberry Pi)
-*   Ensure all necessary Python libraries are installed within your environment.
-*   Run the main collection script: 
-    `/home/rayram34/motosense_env/bin/python /home/rayram34/motosense_main.py`
-*   Ensure the MQTT broker is active to allow data to move from the hardware to the database.
+### Actuators (Buzzer & Fan)
+* **Buzzer VCC:** 5V (Pin 2)
+* **Buzzer I/O:** GPIO 23 (Pin 16)
+* **Fan Red:** 5V (Pin 4)
+* **Fan Black:** Ground (Pin 20)
 
-### 2. Web Dashboard
-*   The dashboard is built using HTML, CSS, and JavaScript with the Chart.js library for data visualization.
-*   The dashboard retrieves data directly from the InfluxDB cloud using a secure token.
-*   **Access:** You can view the live dashboard here: [https://kiiin.pythonanywhere.com/](https://kiiin.pythonanywhere.com/)
+## Installation and Usage
 
-## Maintenance
-*   **Service Monitoring:** On the Raspberry Pi, vibration data collection is managed as a background service. You can check the status using `sudo systemctl status motosense.service`.
-*   **Calibration:** If the sensor readings appear inaccurate, refer to `calibration.json` to update the baseline offsets for the X, Y, and Z axes.
+1. **Edge Processing (Local):** The system runs as a background service (`motosense.service`). You can check the status with `sudo systemctl status motosense.service`.
+2. **Calibration:** If readings are inaccurate, adjust the offset values in `calibration.json`.
+3. **Physical Installation:** Attach the casing to the CVT using cable ties. Ensure the ADXL345 sensor is rigidly mounted to the casing base for accurate data capture.
+
+## Project Information
+* **Dashboard Access:** [https://kiiin.pythonanywhere.com/](https://kiiin.pythonanywhere.com/)
