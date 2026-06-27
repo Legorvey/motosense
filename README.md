@@ -54,5 +54,11 @@ The system features two primary operational modes:
 2. **Calibration:** If readings are inaccurate, adjust the offset values in `calibration.json`.
 3. **Physical Installation:** Attach the casing to the CVT using cable ties. Ensure the ADXL345 sensor is rigidly mounted to the casing base for accurate data capture.
 
+## Documentation
+For a detailed breakdown of the system design, please refer to the following:
+* [System Schematics (PDF)](docs/Schematic.pdf)
+* [Block Diagram](docs/Diagram%20Block.png)
+* [System Flowchart](docs/Flowchart.png)
+
 ## Project Information
 * **Dashboard Access:** [https://kiiin.pythonanywhere.com/](https://kiiin.pythonanywhere.com/)
