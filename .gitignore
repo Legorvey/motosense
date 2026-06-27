@@ -1,0 +1,8 @@
+.env
+config.js
+__pycache__/
+venv/
+.DS_Store
+
+hardware/__pycache__/
+web-app/__pycache__/
