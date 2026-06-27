@@ -1,6 +1,6 @@
 # MOTOSENSE: Vibration Monitoring System
 
-MOTOSENSE is an industrial grade vibration monitoring system designed to track the health of mechanical components, specifically for the CVT system of the Honda Vario 160 motorcycle. This system utilizes a Raspberry Pi and ADXL345 sensor for real time data acquisition, edge processing for instant alerts, and cloud database integration for long term trend analysis.
+MOTOSENSE is a vibration monitoring system designed to track the health of mechanical components, specifically for the CVT system of the motorcycle. This system utilizes a Raspberry Pi and ADXL345 sensor for real time data acquisition, edge processing for instant alerts, and cloud database integration for long term trend analysis.
 
 ## Project Overview
 The system features two primary operational modes:
