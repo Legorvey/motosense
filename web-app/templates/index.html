@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTOSENSE Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* ===== Background ===== */
+body{
+min-height:100vh;
+padding:25px;
+color:white;
+
+background:
+radial-gradient(
+circle at top left,
+rgba(0,89,255,.35),
+transparent 30%
+),
+
+radial-gradient(
+circle at top right,
+rgba(145,0,255,.25),
+transparent 35%
+),
+
+radial-gradient(
+circle at bottom right,
+rgba(255,80,150,.15),
+transparent 30%
+),
+
+linear-gradient(
+135deg,
+#030712,
+#071326,
+#0b1220,
+#09091f
+);
+
+overflow-x:hidden;
+}
+
+/* Glow background */
+body::before{
+content:"";
+position:fixed;
+width:600px;
+height:600px;
+background:#2563eb;
+filter:blur(180px);
+opacity:.15;
+top:-200px;
+left:-100px;
+z-index:-1;
+}
+
+body::after{
+content:"";
+position:fixed;
+width:500px;
+height:500px;
+background:#9333ea;
+filter:blur(180px);
+opacity:.12;
+bottom:-150px;
+right:-100px;
+z-index:-1;
+}
+
+.container{
+width:100%;
+}
+
+/* ===== Header ===== */
+.header{
+padding:40px;
+border-radius:25px;
+text-align:center;
+margin-bottom:30px;
+background:rgba(255, 255, 255, 0.05);
+
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+border:1px solid rgba(255, 255, 255, 0.08);
+
+box-shadow:
+0 8px 32px rgba(0,0,0,0.3),
+0 0 30px rgba(0,132,255,0.15);
+
+transition:all .4s ease;
+cursor:pointer;
+}
+
+.header:hover{
+transform:translateY(-5px);
+box-shadow:
+0 15px 40px rgba(0,0,0,.4),
+0 0 30px rgba(0,119,255,.3),
+0 0 30px rgba(59,130,246,.4);
+}
+
+.header h1{
+font-size:60px;
+font-weight:700;
+letter-spacing:3px;
+margin-bottom:15px;
+text-shadow:
+0 0 10px rgba(255,255,255,.5),
+0 0 30px rgba(0,119,255,.5);
+}
+
+.header h2{
+font-size:26px;
+margin-bottom:15px;
+}
+
+.header p{
+opacity:.8;
+}
+
+/* ===== CARD INFO ===== */
+.info-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.info-card{
+padding:25px;
+border-radius:20px;
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+border:1px solid rgba(255,255,255,.08);
+box-shadow:
+0 8px 32px rgba(0,0,0,.3),
+0 0 20px rgba(0,119,255,.08);
+transition:.4s;
+}
+
+.info-card:hover{
+transform:translateY(-5px);
+box-shadow:
+0 0 25px rgba(59,130,246,.3);
+}
+
+.info-card h3{
+margin-bottom:12px;
+color:#d9e2ff;
+font-size:18px;
+}
+
+.info-value{
+font-size:34px;
+font-weight:bold;
+color:#4ea1ff;
+text-shadow:
+0 0 10px rgba(78,161,255,.6);
+margin-bottom:10px;
+}
+
+.status-value{
+font-size:32px;
+font-weight:bold;
+margin-bottom:10px;
+transition:.5s;
+}
+
+.normal{
+color:#4ea1ff;
+text-shadow:
+0 0 20px rgba(78,161,255,.6);
+}
+
+.warning{
+color:#f59e0b;
+text-shadow:
+0 0 20px rgba(245,158,11,.6);
+}
+
+.danger{
+color:#ef4444;
+text-shadow:
+0 0 20px rgba(239,68,68,.6);
+}
+.info-card span{
+opacity:.7;
+font-size:14px;
+}
+
+/* ===== Card Dashboard ===== */
+.card{
+padding:20px;
+border-radius:20px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+border:1px solid rgba(255,255,255,0.08);
+box-shadow:0 8px 32px rgba(0,0,0,0.3),
+0 0 20px rgba(0,119,255,0.08);
+transition:.4s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:
+0 10px 40px rgba(0,0,0,0.4),
+0 0 30px rgba(0,119,255,0.2);
+}
+
+.card h3{
+margin-bottom:15px;
+font-size:18px;
+font-weight:500;
+color:#d9e2ff;
+}
+
+/* grafik atas */
+.card canvas{
+height:350px !important;
+}
+
+/* grafik bawah */
+.full-chart canvas{
+height:250px !important;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+margin-top:50px; /* jarak dari grafik */
+padding-top:30px;
+padding-bottom:30px;
+width:100%;
+opacity:.9;
+}
+
+.footer h3{
+font-size:22px;
+margin-bottom:10px;
+color:#d9e2ff;
+font-weight:600;
+}
+
+.footer p{
+font-size:16px;
+opacity:.7;
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+<h1>MOTOSENSE</h1>
+<h2>
+Sistem Monitoring Getaran Sasis Mesin Kendaraan Bermotor Roda Dua Berbasis Edge-IoT
+</h2>
+
+<p>
+Edge IoT Based Real-Time Monitoring Dashboard
+</p>
+</div>
+
+<div class="info-grid">
+    <div class="info-card">
+        <h3>Motor Status</h3>
+        <div id="motorStatus" class="status-value normal">
+            NORMAL
+        </div>
+        <span>Status berdasarkan nilai RMS</span>
+    </div>
+
+    <div class="info-card">
+        <h3>RMS Saat Ini</h3>
+        <div id="rms" class="info-value">
+            0.00
+        </div>
+        <span>m/s²</span>
+    </div>
+
+    <div class="info-card">
+        <h3>Moving Average RMS</h3>
+        <div id="avgValue" class="info-value">
+            0.00
+        </div>
+        <span>m/s²</span>
+    </div>
+</div>
+
+
+<!-- Grafik bawah -->
+<div class="card full-chart">
+<h3>Monitoring Getaran Real-Time</h3>
+<canvas id="chart3"></canvas>
+</div>
+</div>
+
+<script>
+
+// ===== GLOW LINE =====
+const glowEffect={
+id:'glowEffect',
+beforeDatasetDraw(chart){
+const {ctx}=chart;
+ctx.save();
+ctx.shadowColor='#3b82f6';
+ctx.shadowBlur=15;
+},
+
+afterDatasetDraw(chart){
+chart.ctx.restore();
+}
+};
+Chart.register(glowEffect);
+
+// ===== STYLE CHART =====
+const chartStyle={
+borderColor:"#4ea1ff",
+backgroundColor:"rgba(78,161,255,.10)",
+borderWidth:3,
+fill:true,
+tension:.45,
+cubicInterpolationMode:'monotone',
+pointRadius:4,
+pointHoverRadius:6,
+pointBackgroundColor:"#4ea1ff",
+pointBorderWidth:0
+};
+
+const options={
+responsive:true,
+maintainAspectRatio:false,
+animation:false,
+plugins:{
+legend:{
+labels:{color:"white"}
+}
+},
+
+scales:{
+x:{
+ticks:{color:"#cbd5e1"},
+grid:{color:"rgba(255,255,255,.05)"}
+},
+
+y:{
+ticks:{color:"#cbd5e1"},
+grid:{color:"rgba(255,255,255,.05)"}
+}
+}
+};
+
+// ===== ARRAY DATA =====
+const labels3=[];
+const data3=[];
+
+// ===== CHART REALTIME =====
+const chart3=new Chart(
+document.getElementById("chart3"),
+{
+type:"line",
+data:{
+labels:labels3,
+datasets:[{
+...chartStyle,
+label:"Monitoring Real-Time",
+data:data3
+}]},
+options
+}
+);
+
+// ===== FUNGSI UPDATE =====
+function updateChart(labels,data,chart,value)
+{const now=new Date()
+.toLocaleTimeString();
+labels.push(now);
+data.push(value);
+
+// simpan 15 titik terakhir
+if(labels.length>15){
+labels.shift();
+data.shift();
+}
+chart.update('none');
+}
+
+// ===== UPDATE STATUS =====
+function updateMotorInfo(rms){
+
+const status =
+document.getElementById(
+"motorStatus"
+);
+
+status.classList.remove(
+"normal",
+"warning",
+"danger"
+);
+
+// kondisi RMS
+if(rms<15000){
+status.innerHTML="NORMAL";
+status.classList.add(
+"normal"
+);
+}
+
+else if(rms<30000){
+status.innerHTML="WARNING";
+status.classList.add(
+"warning"
+);
+}
+
+else{
+status.innerHTML="DANGER";
+status.classList.add(
+"danger"
+);
+}
+}
+</script>
+
+<script>
+const rmsHistory=[];
+function movingAverage(rms){
+rmsHistory.push(rms);
+if(rmsHistory.length>5){
+rmsHistory.shift();
+}
+return rmsHistory.reduce(
+(a,b)=>a+b,
+0
+)/rmsHistory.length;
+}
+
+async function getLatest(){
+    try{
+        const res = await fetch("/api/latest");
+        const data = await res.json();
+        if(data.status=="success"){
+            const rms = Number(data.rms);
+            // update RMS sekarang
+            document.getElementById(
+                "rms"
+            ).innerHTML =
+            rms.toFixed(2);
+
+            // moving average
+            const avg =
+            movingAverage(rms);
+
+            document.getElementById(
+                "avgValue"
+            ).innerHTML =
+            avg.toFixed(2);
+
+            // update status
+            updateMotorInfo(rms);
+
+            // update grafik
+            updateChart(
+                labels3,
+                data3,
+                chart3,
+                rms
+            );
+        }
+    }
+
+    catch(error){
+        console.log(
+            "API Error:",
+            error
+        );
+    }
+}
+getLatest();
+
+setInterval(
+    getLatest,
+    5000
+);
+</script>
+
+<!-- Footer -->
+<div class="footer">
+<h3>Kelompok 10 • Teknik Elektro</h3>
+<p>Tugas Besar Rekayasa Internet</p>
+</div>
+
+</body>
+</html>
